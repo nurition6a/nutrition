@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Nutrition - Augmented Reality</title>
+  <title>Nutrition Augmented Reality</title>
 
   <!-- A-Frame -->
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
@@ -15,83 +15,30 @@
   <style>
     body {
       margin: 0;
+      overflow: hidden;
       font-family: Arial, sans-serif;
-      background: #f4f8f1;
     }
 
-    .info {
+    #message {
       position: fixed;
-      top: 15px;
+      top: 20px;
       left: 50%;
       transform: translateX(-50%);
-      width: 90%;
-      max-width: 500px;
-      padding: 18px;
       background: rgba(255,255,255,0.95);
-      border-radius: 20px;
+      padding: 12px 20px;
+      border-radius: 15px;
+      font-size: 18px;
       text-align: center;
       z-index: 10;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
-
-    h1 {
-      color: #247a35;
-      font-size: 28px;
-      margin: 5px;
-    }
-
-    h2 {
-      color: #4b7f32;
-      font-size: 24px;
-    }
-
-    p {
-      font-size: 18px;
-      line-height: 1.5;
-    }
-
-    .topic {
-      margin-top: 15px;
-      padding: 15px;
-      border: 3px solid #8bbf55;
-      border-radius: 18px;
-      background: #fafff4;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="info">
-    <h1>🌱 Nutrition in Living Things</h1>
-    <p>
-      Point your camera at the target image to explore augmented reality.
-    </p>
-
-    <div class="topic">
-      <h2>🌿 Photosynthesis</h2>
-      <p>
-        Plants make their own food using sunlight, water,
-        carbon dioxide and minerals.
-      </p>
-    </div>
-
-    <div class="topic">
-      <h2>🦠 Chemosynthesis</h2>
-      <p>
-        Some bacteria obtain energy from chemical substances
-        in their environment.
-      </p>
-    </div>
-
-    <div class="topic">
-      <h2>🐾 Heterotrophs</h2>
-      <p>
-        Animals and fungi are heterotrophs. Animals obtain
-        nutrients by eating other organisms. Fungi break down
-        organic matter and absorb nutrients.
-      </p>
-    </div>
+  <!-- Message shown before recognizing the image -->
+  <div id="message">
+    📷 Point the camera at the nutrition image
   </div>
 
   <a-scene
@@ -106,32 +53,98 @@
       look-controls="enabled: false">
     </a-camera>
 
-    <!-- Target image -->
+    <!-- EVERYTHING BELOW APPEARS ONLY WHEN THE IMAGE IS RECOGNIZED -->
+
     <a-entity mindar-image-target="targetIndex: 0">
 
-      <!-- 3D object shown when the image is recognized -->
-      <a-box
-        position="0 0.2 0"
-        rotation="0 0 0"
-        color="#4CAF50"
-        scale="0.5 0.5 0.5"
-        animation="property: rotation;
-                   to: 0 360 0;
-                   loop: true;
-                   dur: 5000">
-      </a-box>
+      <!-- Background -->
+      <a-plane
+        position="0 0 0"
+        width="1.8"
+        height="1.2"
+        color="#F4F8E8">
+      </a-plane>
 
+      <!-- Title -->
       <a-text
         value="NUTRITION"
-        position="0 -0.5 0"
+        position="0 0.48 0.02"
         align="center"
-        color="#247a35"
+        color="#247A35"
         width="2">
+      </a-text>
+
+      <!-- Photosynthesis -->
+      <a-text
+        value="PHOTOSYNTHESIS"
+        position="-0.65 0.25 0.02"
+        align="center"
+        color="#247A35"
+        width="1.1">
+      </a-text>
+
+      <a-text
+        value="Plants make their own food using sunlight, water, carbon dioxide and minerals."
+        position="-0.65 0.05 0.02"
+        align="center"
+        color="#222222"
+        width="0.9"
+        wrap-count="28">
+      </a-text>
+
+      <!-- Chemosynthesis -->
+      <a-text
+        value="CHEMOSYNTHESIS"
+        position="0.65 0.25 0.02"
+        align="center"
+        color="#6A3DA8"
+        width="1.1">
+      </a-text>
+
+      <a-text
+        value="Some bacteria obtain energy from chemical substances in their environment."
+        position="0.65 0.05 0.02"
+        align="center"
+        color="#222222"
+        width="0.9"
+        wrap-count="28">
+      </a-text>
+
+      <!-- Heterotrophs -->
+      <a-text
+        value="HETEROTROPHS"
+        position="0 -0.25 0.02"
+        align="center"
+        color="#D66A18"
+        width="1.2">
+      </a-text>
+
+      <a-text
+        value="Animals and fungi are heterotrophs. Animals eat other organisms, while fungi break down organic matter and absorb nutrients."
+        position="0 -0.48 0.02"
+        align="center"
+        color="#222222"
+        width="1.5"
+        wrap-count="45">
       </a-text>
 
     </a-entity>
 
   </a-scene>
+
+  <script>
+    const message = document.getElementById("message");
+
+    const scene = document.querySelector("a-scene");
+
+    scene.addEventListener("targetFound", () => {
+      message.style.display = "none";
+    });
+
+    scene.addEventListener("targetLost", () => {
+      message.style.display = "block";
+    });
+  </script>
 
 </body>
 </html>
