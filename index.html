@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
   <title>Nutrition Augmented Reality</title>
 
@@ -13,51 +15,93 @@
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
 
   <style>
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
       overflow: hidden;
-      font-family: Arial, sans-serif;
+      background: black;
     }
 
-    #message {
+    #cameraMessage {
       position: fixed;
       top: 20px;
       left: 50%;
       transform: translateX(-50%);
+      z-index: 9999;
+
       background: rgba(255,255,255,0.95);
-      padding: 12px 20px;
-      border-radius: 15px;
+      padding: 14px 22px;
+      border-radius: 18px;
+
+      font-family: Arial, sans-serif;
       font-size: 18px;
+      font-weight: bold;
+
       text-align: center;
-      z-index: 10;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- Message shown before recognizing the image -->
-  <div id="message">
-    📷 Point the camera at the nutrition image
+  <!-- ONLY this message is visible when the camera starts -->
+  <div id="cameraMessage">
+    📷 Point the camera at the nutrition card
   </div>
 
+
   <a-scene
-    mindar-image="imageTargetSrc: ./targets.mind;"
+
+    mindar-image="
+      imageTargetSrc: ./targets.mind;
+      autoStart: true;
+      uiLoading: no;
+      uiScanning: no;
+      uiError: no;
+    "
+
     color-space="sRGB"
-    renderer="colorManagement: true, physicallyCorrectLights"
+
+    renderer="
+      colorManagement: true;
+      physicallyCorrectLights;
+    "
+
     vr-mode-ui="enabled: false"
-    device-orientation-permission-ui="enabled: false">
+
+    device-orientation-permission-ui="enabled: false"
+
+    embedded
+  >
+
+
+    <!-- CAMERA -->
 
     <a-camera
       position="0 0 0"
       look-controls="enabled: false">
     </a-camera>
 
-    <!-- EVERYTHING BELOW APPEARS ONLY WHEN THE IMAGE IS RECOGNIZED -->
 
-    <a-entity mindar-image-target="targetIndex: 0">
+    <!--
+      IMPORTANT:
 
-      <!-- Background -->
+      This entire entity starts HIDDEN.
+      It becomes visible ONLY after MindAR
+      detects target image 0.
+    -->
+
+    <a-entity
+      id="nutritionTarget"
+      mindar-image-target="targetIndex: 0"
+      visible="false"
+    >
+
+
+      <!-- BACKGROUND -->
+
       <a-plane
         position="0 0 0"
         width="1.8"
@@ -65,85 +109,127 @@
         color="#F4F8E8">
       </a-plane>
 
-      <!-- Title -->
+
+      <!-- TITLE -->
+
       <a-text
         value="NUTRITION"
-        position="0 0.48 0.02"
+        position="0 0.48 0.03"
         align="center"
         color="#247A35"
         width="2">
       </a-text>
 
-      <!-- Photosynthesis -->
+
+      <!-- PHOTOSYNTHESIS -->
+
       <a-text
         value="PHOTOSYNTHESIS"
-        position="-0.65 0.25 0.02"
+        position="-0.55 0.25 0.03"
         align="center"
         color="#247A35"
-        width="1.1">
+        width="1.0">
       </a-text>
 
       <a-text
         value="Plants make their own food using sunlight, water, carbon dioxide and minerals."
-        position="-0.65 0.05 0.02"
+        position="-0.55 0.03 0.03"
         align="center"
         color="#222222"
-        width="0.9"
-        wrap-count="28">
+        width="0.8"
+        wrap-count="25">
       </a-text>
 
-      <!-- Chemosynthesis -->
+
+      <!-- CHEMOSYNTHESIS -->
+
       <a-text
         value="CHEMOSYNTHESIS"
-        position="0.65 0.25 0.02"
+        position="0.55 0.25 0.03"
         align="center"
         color="#6A3DA8"
-        width="1.1">
+        width="1.0">
       </a-text>
 
       <a-text
         value="Some bacteria obtain energy from chemical substances in their environment."
-        position="0.65 0.05 0.02"
+        position="0.55 0.03 0.03"
         align="center"
         color="#222222"
-        width="0.9"
-        wrap-count="28">
+        width="0.8"
+        wrap-count="25">
       </a-text>
 
-      <!-- Heterotrophs -->
+
+      <!-- HETEROTROPHS -->
+
       <a-text
         value="HETEROTROPHS"
-        position="0 -0.25 0.02"
+        position="0 -0.28 0.03"
         align="center"
         color="#D66A18"
-        width="1.2">
+        width="1.1">
       </a-text>
 
       <a-text
-        value="Animals and fungi are heterotrophs. Animals eat other organisms, while fungi break down organic matter and absorb nutrients."
-        position="0 -0.48 0.02"
+        value="Animals and fungi cannot make their own food. Animals eat other organisms, while fungi break down organic matter and absorb nutrients."
+        position="0 -0.48 0.03"
         align="center"
         color="#222222"
-        width="1.5"
-        wrap-count="45">
+        width="1.35"
+        wrap-count="42">
       </a-text>
+
 
     </a-entity>
 
   </a-scene>
 
+
   <script>
-    const message = document.getElementById("message");
 
-    const scene = document.querySelector("a-scene");
+    const target =
+      document.querySelector("#nutritionTarget");
 
-    scene.addEventListener("targetFound", () => {
-      message.style.display = "none";
+    const message =
+      document.querySelector("#cameraMessage");
+
+
+    /*
+      When the image is detected:
+      SHOW the augmented information.
+    */
+
+    target.addEventListener("targetFound", function () {
+
+      target.setAttribute("visible", "true");
+
+      message.innerHTML =
+        "✨ Image detected!";
+
+      setTimeout(function () {
+        message.style.display = "none";
+      }, 1000);
+
     });
 
-    scene.addEventListener("targetLost", () => {
+
+    /*
+      When the image is no longer detected:
+      HIDE the augmented information.
+    */
+
+    target.addEventListener("targetLost", function () {
+
+      target.setAttribute("visible", "false");
+
       message.style.display = "block";
+
+      message.innerHTML =
+        "📷 Point the camera at the nutrition card";
+
     });
+
   </script>
 
 </body>
