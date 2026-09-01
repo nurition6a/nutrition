@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
 
   <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+        content="width=device-width,
+                 initial-scale=1.0,
+                 maximum-scale=1.0,
+                 user-scalable=no">
 
   <title>Nutrition Augmented Reality</title>
 
@@ -12,10 +16,12 @@
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 
   <!-- MindAR -->
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
   <style>
-    html, body {
+
+    html,
+    body {
       margin: 0;
       padding: 0;
       width: 100%;
@@ -24,42 +30,64 @@
       background: black;
     }
 
+    a-scene {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Message shown before the card is detected */
     #cameraMessage {
       position: fixed;
       top: 20px;
       left: 50%;
+
       transform: translateX(-50%);
+
       z-index: 9999;
 
-      background: rgba(255,255,255,0.95);
+      background: white;
+      color: black;
+
       padding: 14px 22px;
+
       border-radius: 18px;
 
       font-family: Arial, sans-serif;
+
       font-size: 18px;
       font-weight: bold;
 
       text-align: center;
+
+      box-shadow: 0 3px 10px rgba(0,0,0,0.3);
     }
+
   </style>
+
 </head>
+
 
 <body>
 
-  <!-- ONLY this message is visible when the camera starts -->
+  <!-- Message -->
   <div id="cameraMessage">
     📷 Point the camera at the nutrition card
   </div>
 
 
+  <!-- AR SCENE -->
   <a-scene
+
+    embedded
 
     mindar-image="
       imageTargetSrc: ./targets.mind;
       autoStart: true;
-      uiLoading: no;
-      uiScanning: no;
-      uiError: no;
+      uiScanning: true;
+      uiLoading: true;
     "
 
     color-space="sRGB"
@@ -73,112 +101,80 @@
 
     device-orientation-permission-ui="enabled: false"
 
-    embedded
+    loading-screen="enabled: false"
+
   >
 
 
     <!-- CAMERA -->
-
     <a-camera
       position="0 0 0"
-      look-controls="enabled: false">
+      look-controls="enabled: false"
+      cursor="rayOrigin: mouse"
+      raycaster="objects: .clickable">
     </a-camera>
 
 
-    <!--
-      IMPORTANT:
-
-      This entire entity starts HIDDEN.
-      It becomes visible ONLY after MindAR
-      detects target image 0.
-    -->
-
+    <!-- TARGET -->
     <a-entity
-      id="nutritionTarget"
       mindar-image-target="targetIndex: 0"
-      visible="false"
-    >
+      id="nutritionTarget">
 
 
-      <!-- BACKGROUND -->
+      <!-- INFORMATION PANEL -->
 
       <a-plane
-        position="0 0 0"
-        width="1.8"
-        height="1.2"
-        color="#F4F8E8">
-      </a-plane>
+        position="0 0 0.01"
+        width="1.2"
+        height="0.75"
+        color="#ffffff"
+        material="opacity: 0.95"
+      ></a-plane>
 
 
       <!-- TITLE -->
 
       <a-text
         value="NUTRITION"
-        position="0 0.48 0.03"
+        position="0 0.25 0.02"
         align="center"
-        color="#247A35"
-        width="2">
-      </a-text>
+        color="#1b5e20"
+        width="1.5"
+      ></a-text>
 
 
-      <!-- PHOTOSYNTHESIS -->
+      <!-- MAIN INFORMATION -->
 
       <a-text
-        value="PHOTOSYNTHESIS"
-        position="-0.55 0.25 0.03"
-        align="center"
-        color="#247A35"
-        width="1.0">
-      </a-text>
+        value="Living things obtain nutrients in different ways.
 
-      <a-text
-        value="Plants make their own food using sunlight, water, carbon dioxide and minerals."
-        position="-0.55 0.03 0.03"
+Autotrophs make their own food.
+
+Plants use photosynthesis.
+
+Some bacteria use chemosynthesis.
+
+Animals and fungi are heterotrophs."
+        position="0 0.02 0.02"
         align="center"
         color="#222222"
-        width="0.8"
-        wrap-count="25">
-      </a-text>
+        width="1.15"
+        wrap-count="38"
+        line-height="55"
+      ></a-text>
 
 
-      <!-- CHEMOSYNTHESIS -->
-
-      <a-text
-        value="CHEMOSYNTHESIS"
-        position="0.55 0.25 0.03"
-        align="center"
-        color="#6A3DA8"
-        width="1.0">
-      </a-text>
+      <!-- EXTRA INFORMATION -->
 
       <a-text
-        value="Some bacteria obtain energy from chemical substances in their environment."
-        position="0.55 0.03 0.03"
+        value="Good nutrition provides energy and nutrients needed to grow, develop and survive."
+        position="0 -0.28 0.02"
         align="center"
-        color="#222222"
-        width="0.8"
-        wrap-count="25">
-      </a-text>
-
-
-      <!-- HETEROTROPHS -->
-
-      <a-text
-        value="HETEROTROPHS"
-        position="0 -0.28 0.03"
-        align="center"
-        color="#D66A18"
-        width="1.1">
-      </a-text>
-
-      <a-text
-        value="Animals and fungi cannot make their own food. Animals eat other organisms, while fungi break down organic matter and absorb nutrients."
-        position="0 -0.48 0.03"
-        align="center"
-        color="#222222"
-        width="1.35"
-        wrap-count="42">
-      </a-text>
+        color="#2e7d32"
+        width="1.05"
+        wrap-count="42"
+        line-height="55"
+      ></a-text>
 
 
     </a-entity>
@@ -186,51 +182,43 @@
   </a-scene>
 
 
+  <!-- JAVASCRIPT -->
+
   <script>
 
-    const target =
-      document.querySelector("#nutritionTarget");
+    const target = document.querySelector("#nutritionTarget");
 
-    const message =
-      document.querySelector("#cameraMessage");
+    const message = document.querySelector("#cameraMessage");
 
 
     /*
-      When the image is detected:
-      SHOW the augmented information.
+      When the nutrition card is detected
     */
 
     target.addEventListener("targetFound", function () {
 
-      target.setAttribute("visible", "true");
+      console.log("Nutrition card detected!");
 
-      message.innerHTML =
-        "✨ Image detected!";
-
-      setTimeout(function () {
-        message.style.display = "none";
-      }, 1000);
+      message.style.display = "none";
 
     });
 
 
     /*
-      When the image is no longer detected:
-      HIDE the augmented information.
+      When the nutrition card is no longer detected
     */
 
     target.addEventListener("targetLost", function () {
 
-      target.setAttribute("visible", "false");
+      console.log("Nutrition card lost!");
 
       message.style.display = "block";
-
-      message.innerHTML =
-        "📷 Point the camera at the nutrition card";
 
     });
 
   </script>
 
+
 </body>
+
 </html>
