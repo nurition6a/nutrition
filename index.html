@@ -2,18 +2,16 @@
 <html lang="en">
 
 <head>
+
   <meta charset="UTF-8">
 
   <meta name="viewport"
-        content="width=device-width,
-                 initial-scale=1.0,
-                 maximum-scale=1.0,
-                 user-scalable=no">
+        content="width=device-width, initial-scale=1.0">
 
-  <title>Nutrition Augmented Reality</title>
+  <title>Nutrition AR</title>
 
   <!-- A-Frame -->
-  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
 
   <!-- MindAR -->
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
@@ -27,23 +25,19 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: black;
     }
 
-    a-scene {
+    .ar-container {
       position: absolute;
-      top: 0;
-      left: 0;
       width: 100%;
       height: 100%;
+      overflow: hidden;
     }
 
-    /* Message shown before the card is detected */
-    #cameraMessage {
+    #message {
       position: fixed;
       top: 20px;
       left: 50%;
-
       transform: translateX(-50%);
 
       z-index: 9999;
@@ -51,18 +45,15 @@
       background: white;
       color: black;
 
-      padding: 14px 22px;
+      padding: 14px 20px;
 
-      border-radius: 18px;
+      border-radius: 20px;
 
       font-family: Arial, sans-serif;
-
       font-size: 18px;
       font-weight: bold;
 
       text-align: center;
-
-      box-shadow: 0 3px 10px rgba(0,0,0,0.3);
     }
 
   </style>
@@ -72,149 +63,102 @@
 
 <body>
 
-  <!-- Message -->
-  <div id="cameraMessage">
-    📷 Point the camera at the nutrition card
+  <div class="ar-container">
+
+    <div id="message">
+      📷 Point the camera at the nutrition card
+    </div>
+
+
+    <a-scene
+
+      mindar-image="
+        imageTargetSrc: ./targets.mind;
+        autoStart: true;
+        uiLoading: no;
+        uiError: no;
+        uiScanning: no;
+      "
+
+      embedded
+
+      color-space="sRGB"
+
+      renderer="
+        colorManagement: true;
+        physicallyCorrectLights;
+      "
+
+      vr-mode-ui="enabled: false"
+
+      device-orientation-permission-ui="enabled: false"
+    >
+
+
+      <a-camera
+        position="0 0 0"
+        look-controls="enabled: false">
+      </a-camera>
+
+
+      <!-- TARGET -->
+
+      <a-entity
+        id="target"
+        mindar-image-target="targetIndex: 0">
+
+
+        <!-- Simple test object -->
+
+        <a-box
+          position="0 0 0.1"
+          rotation="0 45 0"
+          color="#4CAF50"
+          scale="0.3 0.3 0.3">
+        </a-box>
+
+
+      </a-entity>
+
+
+    </a-scene>
+
   </div>
 
 
-  <!-- AR SCENE -->
-  <a-scene
-
-    embedded
-
-    mindar-image="
-      imageTargetSrc: ./targets.mind;
-      autoStart: true;
-      uiScanning: true;
-      uiLoading: true;
-    "
-
-    color-space="sRGB"
-
-    renderer="
-      colorManagement: true;
-      physicallyCorrectLights;
-    "
-
-    vr-mode-ui="enabled: false"
-
-    device-orientation-permission-ui="enabled: false"
-
-    loading-screen="enabled: false"
-
-  >
-
-
-    <!-- CAMERA -->
-    <a-camera
-      position="0 0 0"
-      look-controls="enabled: false"
-      cursor="rayOrigin: mouse"
-      raycaster="objects: .clickable">
-    </a-camera>
-
-
-    <!-- TARGET -->
-    <a-entity
-      mindar-image-target="targetIndex: 0"
-      id="nutritionTarget">
-
-
-      <!-- INFORMATION PANEL -->
-
-      <a-plane
-        position="0 0 0.01"
-        width="1.2"
-        height="0.75"
-        color="#ffffff"
-        material="opacity: 0.95"
-      ></a-plane>
-
-
-      <!-- TITLE -->
-
-      <a-text
-        value="NUTRITION"
-        position="0 0.25 0.02"
-        align="center"
-        color="#1b5e20"
-        width="1.5"
-      ></a-text>
-
-
-      <!-- MAIN INFORMATION -->
-
-      <a-text
-        value="Living things obtain nutrients in different ways.
-
-Autotrophs make their own food.
-
-Plants use photosynthesis.
-
-Some bacteria use chemosynthesis.
-
-Animals and fungi are heterotrophs."
-        position="0 0.02 0.02"
-        align="center"
-        color="#222222"
-        width="1.15"
-        wrap-count="38"
-        line-height="55"
-      ></a-text>
-
-
-      <!-- EXTRA INFORMATION -->
-
-      <a-text
-        value="Good nutrition provides energy and nutrients needed to grow, develop and survive."
-        position="0 -0.28 0.02"
-        align="center"
-        color="#2e7d32"
-        width="1.05"
-        wrap-count="42"
-        line-height="55"
-      ></a-text>
-
-
-    </a-entity>
-
-  </a-scene>
-
-
-  <!-- JAVASCRIPT -->
-
   <script>
 
-    const target = document.querySelector("#nutritionTarget");
+    const target =
+      document.querySelector("#target");
 
-    const message = document.querySelector("#cameraMessage");
-
-
-    /*
-      When the nutrition card is detected
-    */
-
-    target.addEventListener("targetFound", function () {
-
-      console.log("Nutrition card detected!");
-
-      message.style.display = "none";
-
-    });
+    const message =
+      document.querySelector("#message");
 
 
-    /*
-      When the nutrition card is no longer detected
-    */
+    target.addEventListener(
+      "targetFound",
+      function () {
 
-    target.addEventListener("targetLost", function () {
+        console.log("TARGET FOUND");
 
-      console.log("Nutrition card lost!");
+        message.innerHTML =
+          "✅ CARD DETECTED!";
 
-      message.style.display = "block";
+      }
+    );
 
-    });
+
+    target.addEventListener(
+      "targetLost",
+      function () {
+
+        console.log("TARGET LOST");
+
+        message.innerHTML =
+          "📷 Point the camera at the nutrition card";
+
+      }
+    );
 
   </script>
 
