@@ -4,132 +4,469 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Nutrition AR</title>
-
-  <!-- A-Frame -->
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-
-  <!-- MindAR -->
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
 
+  <title>Living Things - Nutrition</title>
+
   <style>
-    html,
     body {
       margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
       overflow: hidden;
-      background: black;
+      font-family: Arial, sans-serif;
     }
 
-    .ar-container {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-    }
-
-    #message {
+    #menu {
       position: fixed;
-      top: 20px;
+      top: 3%;
       left: 50%;
       transform: translateX(-50%);
+      z-index: 10;
 
-      z-index: 9999;
+      width: 92%;
+      max-width: 650px;
+      max-height: 90vh;
+      overflow-y: auto;
 
-      background: white;
-      color: black;
+      background: rgba(255, 250, 235, 0.97);
+      border: 5px solid #6b8e23;
+      border-radius: 30px;
 
-      padding: 15px 20px;
-      border-radius: 20px;
-
-      font-family: Arial, sans-serif;
-      font-size: 18px;
-      font-weight: bold;
+      padding: 25px;
+      box-sizing: border-box;
 
       text-align: center;
-      white-space: nowrap;
+      display: none;
+
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    #menu h1 {
+      font-size: 34px;
+      margin: 5px 0 10px;
+      color: #285943;
+    }
+
+    #menu .intro {
+      font-size: 21px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    button {
+      border: 3px solid #555;
+      border-radius: 18px;
+      padding: 16px 8px;
+      margin: 0;
+      font-size: 21px;
+      font-weight: bold;
+      cursor: pointer;
+      background: white;
+    }
+
+    button:hover {
+      transform: scale(1.03);
+    }
+
+    #info {
+      margin-top: 20px;
+      padding: 22px;
+
+      background: white;
+      border: 4px solid #6b8e23;
+      border-radius: 25px;
+
+      display: none;
+      text-align: left;
+
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.18);
+    }
+
+    #info h2 {
+      font-size: 30px;
+      margin-top: 0;
+      text-align: center;
+      color: #285943;
+    }
+
+    #info h3 {
+      font-size: 24px;
+      color: #477a3c;
+    }
+
+    #info p,
+    #info li {
+      font-size: 21px;
+      line-height: 1.55;
+      color: #222;
+    }
+
+    .highlight {
+      font-weight: bold;
+      color: #356b35;
+    }
+
+    .formula {
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      background: #edf5e6;
+      padding: 12px;
+      border-radius: 15px;
+      margin: 15px 0;
+    }
+
+    .back {
+      display: block;
+      margin: 20px auto 0;
+      background: #dcecc9;
+      border: 3px solid #477a3c;
+      color: #285943;
+      padding: 13px 20px;
+      border-radius: 15px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    @media (max-width: 500px) {
+
+      #menu {
+        padding: 18px;
+      }
+
+      #menu h1 {
+        font-size: 28px;
+      }
+
+      #menu .intro {
+        font-size: 18px;
+      }
+
+      button {
+        font-size: 17px;
+        padding: 13px 5px;
+      }
+
+      #info h2 {
+        font-size: 26px;
+      }
+
+      #info h3 {
+        font-size: 21px;
+      }
+
+      #info p,
+      #info li {
+        font-size: 18px;
+      }
+
+      .formula {
+        font-size: 18px;
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <div class="ar-container">
+  <div id="menu">
 
-    <div id="message">
-      📷 Point the camera at your nutrition card
+    <h1>🌿 YOU FOUND IT! 🌿</h1>
+
+    <p class="intro">
+      Discover how different living things obtain the nutrients
+      and energy they need to live.
+    </p>
+
+    <div class="buttons">
+
+      <button onclick="showInfo('photosynthesis')">
+        🌱 Photosynthesis
+      </button>
+
+      <button onclick="showInfo('chemosynthesis')">
+        🦠 Chemosynthesis
+      </button>
+
+      <button onclick="showInfo('fungi')">
+        🍄 Fungi
+      </button>
+
+      <button onclick="showInfo('animals')">
+        🐾 Heterotrophic Animals
+      </button>
+
     </div>
 
-    <a-scene
-      mindar-image="
-        imageTargetSrc: ./targets.mind;
-        autoStart: true;
-        uiLoading: no;
-        uiScanning: no;
-        uiError: no;
-        filterMinCF: 0.0005;
-        filterBeta: 0.001;
-        warmupTolerance: 8;
-        missTolerance: 12;
-      "
-      embedded
-      color-space="sRGB"
-      renderer="colorManagement: true, physicallyCorrectLights"
-      vr-mode-ui="enabled: false"
-      device-orientation-permission-ui="enabled: false"
-    >
-
-      <!-- CAMERA -->
-      <a-camera
-        position="0 0 0"
-        look-controls="enabled: false">
-      </a-camera>
-
-
-      <!-- IMAGE TARGET -->
-      <a-entity
-        id="target"
-        mindar-image-target="targetIndex: 0">
-
-        <!-- TEST CUBE -->
-        <a-box
-          position="0 0 0.2"
-          color="red"
-          depth="0.3"
-          height="0.3"
-          width="0.3">
-        </a-box>
-
-      </a-entity>
-
-    </a-scene>
+    <div id="info"></div>
 
   </div>
+
+
+  <a-scene
+    mindar-image="imageTargetSrc: ./targets.mind;"
+    color-space="sRGB"
+    renderer="colorManagement: true"
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false">
+
+    <a-camera
+      position="0 0 0"
+      look-controls="enabled: false">
+    </a-camera>
+
+    <a-entity
+      id="target"
+      mindar-image-target="targetIndex: 0">
+    </a-entity>
+
+  </a-scene>
 
 
   <script>
 
     const target = document.querySelector("#target");
-    const message = document.querySelector("#message");
+    const menu = document.querySelector("#menu");
+    const info = document.querySelector("#info");
 
 
-    // When the card is detected
     target.addEventListener("targetFound", () => {
-
-      message.innerHTML = "✅ TARGET FOUND!";
-
+      menu.style.display = "block";
     });
 
 
-    // When the card is lost
     target.addEventListener("targetLost", () => {
-
-      message.innerHTML =
-        "📷 Point the camera at your nutrition card";
-
+      menu.style.display = "none";
+      info.style.display = "none";
     });
+
+
+    function showInfo(type) {
+
+      info.style.display = "block";
+
+
+      if (type === "photosynthesis") {
+
+        info.innerHTML = `
+
+          <h2>🌱 Photosynthesis</h2>
+
+          <h3>How do plants get their food?</h3>
+
+          <p>
+            Plants are <span class="highlight">autotrophs</span>.
+            This means they can make their own food.
+          </p>
+
+          <p>
+            During photosynthesis, plants use
+            <span class="highlight">
+            sunlight, water, and carbon dioxide (CO₂)
+            </span>
+            to produce glucose, which stores chemical energy.
+          </p>
+
+          <p>
+            Plants also need
+            <span class="highlight">mineral nutrients</span>
+            from the soil, including nitrogen, phosphorus,
+            and potassium.
+          </p>
+
+          <p>
+            Oxygen (O₂) is released into the atmosphere
+            as a product of photosynthesis.
+          </p>
+
+          <div class="formula">
+            ☀️ Light + 💧 Water + 🌫️ CO₂
+            → 🌿 Glucose + O₂
+          </div>
+
+          <button class="back" onclick="backToMenu()">
+            ← Back to topics
+          </button>
+
+        `;
+      }
+
+
+      if (type === "chemosynthesis") {
+
+        info.innerHTML = `
+
+          <h2>🦠 Chemosynthesis</h2>
+
+          <h3>How do some bacteria obtain energy?</h3>
+
+          <p>
+            Some bacteria are
+            <span class="highlight">chemoautotrophs</span>.
+            They can produce organic compounds without using sunlight.
+          </p>
+
+          <p>
+            Instead of sunlight, they obtain energy from
+            chemical reactions involving
+            <span class="highlight">
+            inorganic substances
+            </span>
+            such as sulfur, ammonia, iron, hydrogen,
+            or hydrogen sulfide.
+          </p>
+
+          <p>
+            The energy released by these chemical reactions
+            is used to build organic compounds that the bacteria
+            need for growth and survival.
+          </p>
+
+          <div class="formula">
+            🧪 Inorganic chemicals → ⚡ Energy → 🦠 Organic compounds
+          </div>
+
+          <p>
+            Chemosynthesis is especially important in environments
+            where sunlight is unavailable, such as deep ocean ecosystems.
+          </p>
+
+          <button class="back" onclick="backToMenu()">
+            ← Back to topics
+          </button>
+
+        `;
+      }
+
+
+      if (type === "fungi") {
+
+        info.innerHTML = `
+
+          <h2>🍄 Fungi</h2>
+
+          <h3>How do fungi obtain nutrients?</h3>
+
+          <p>
+            Fungi are
+            <span class="highlight">heterotrophs</span>.
+            They cannot make their own food through photosynthesis.
+          </p>
+
+          <p>
+            Fungi release enzymes into their surroundings.
+            These enzymes break down organic matter into
+            smaller substances.
+          </p>
+
+          <p>
+            The fungi then
+            <span class="highlight">
+            absorb the nutrients
+            </span>
+            through their microscopic structures called hyphae.
+            A network of hyphae is called a mycelium.
+          </p>
+
+          <p>
+            Fungi can obtain nutrients from
+            <span class="highlight">
+            soil and decomposing organic matter
+            </span>,
+            including dead plants and animals.
+          </p>
+
+          <div class="formula">
+            🍂 Organic matter → 🔬 Breakdown → 🍄 Nutrient absorption
+          </div>
+
+          <p>
+            Fungi are important decomposers because they help
+            recycle nutrients through ecosystems.
+          </p>
+
+          <button class="back" onclick="backToMenu()">
+            ← Back to topics
+          </button>
+
+        `;
+      }
+
+
+      if (type === "animals") {
+
+        info.innerHTML = `
+
+          <h2>🐾 Heterotrophic Animals</h2>
+
+          <h3>How do animals obtain nutrients?</h3>
+
+          <p>
+            Animals are
+            <span class="highlight">heterotrophs</span>.
+            They cannot make their own food, so they obtain
+            nutrients by consuming other organisms or organic matter.
+          </p>
+
+          <p>
+            Animals do not all have the same diet.
+            Their diets vary depending on the species.
+          </p>
+
+          <ul>
+
+            <li>
+              🌿 <strong>Herbivores:</strong>
+              mainly eat plants.
+            </li>
+
+            <li>
+              🥩 <strong>Carnivores:</strong>
+              mainly eat other animals.
+            </li>
+
+            <li>
+              🥗 <strong>Omnivores:</strong>
+              eat both plants and animals.
+            </li>
+
+            <li>
+              🍂 <strong>Scavengers:</strong>
+              feed on dead animals or organic remains.
+            </li>
+
+          </ul>
+
+          <p>
+            After eating, animals digest their food and absorb
+            nutrients that provide energy and materials for
+            growth, repair, and normal body functions.
+          </p>
+
+          <div class="formula">
+            🍽️ Food → 🧪 Digestion → 💪 Nutrients + Energy
+          </div>
+
+          <button class="back" onclick="backToMenu()">
+            ← Back to topics
+          </button>
+
+        `;
+      }
+
+    }
+
+
+    function backToMenu() {
+      info.style.display = "none";
+    }
 
   </script>
 
