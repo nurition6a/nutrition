@@ -10,10 +10,15 @@
   <title>Living Things - Nutrition</title>
 
   <style>
+    html,
     body {
       margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
       overflow: hidden;
       font-family: Arial, sans-serif;
+      background: black;
     }
 
     #menu {
@@ -211,7 +216,18 @@
 
 
   <a-scene
-    mindar-image="imageTargetSrc: ./targets.mind;"
+    mindar-image="
+      imageTargetSrc: ./targets.mind;
+      autoStart: true;
+      uiLoading: no;
+      uiScanning: no;
+      uiError: no;
+      filterMinCF: 0.0001;
+      filterBeta: 0.001;
+      warmupTolerance: 8;
+      missTolerance: 15;
+    "
+    embedded
     color-space="sRGB"
     renderer="colorManagement: true"
     vr-mode-ui="enabled: false"
@@ -236,15 +252,35 @@
     const menu = document.querySelector("#menu");
     const info = document.querySelector("#info");
 
+    let lostTimer = null;
+
 
     target.addEventListener("targetFound", () => {
+
+      // Cancel any pending hide
+      clearTimeout(lostTimer);
+
+      // Show the menu
       menu.style.display = "block";
+
     });
 
 
     target.addEventListener("targetLost", () => {
-      menu.style.display = "none";
-      info.style.display = "none";
+
+      // Wait before hiding the menu.
+      // This prevents the AR from disappearing
+      // because of a very small movement.
+
+      clearTimeout(lostTimer);
+
+      lostTimer = setTimeout(() => {
+
+        menu.style.display = "none";
+        info.style.display = "none";
+
+      }, 1200);
+
     });
 
 
