@@ -224,8 +224,8 @@
       uiError: no;
       filterMinCF: 0.0001;
       filterBeta: 0.001;
-      warmupTolerance: 8;
-      missTolerance: 15;
+      warmupTolerance: 3;
+      missTolerance: 5;
     "
     embedded
     color-space="sRGB"
@@ -255,31 +255,41 @@
     let lostTimer = null;
 
 
+    /*
+      When the image is found
+    */
     target.addEventListener("targetFound", () => {
 
-      // Cancel any pending hide
       clearTimeout(lostTimer);
 
-      // Show the menu
       menu.style.display = "block";
 
     });
 
 
+    /*
+      When the image is temporarily lost
+    */
     target.addEventListener("targetLost", () => {
-
-      // Wait before hiding the menu.
-      // This prevents the AR from disappearing
-      // because of a very small movement.
 
       clearTimeout(lostTimer);
 
+      /*
+        We wait 3 seconds before hiding the menu.
+        This prevents small movements from
+        immediately removing the information.
+      */
+
       lostTimer = setTimeout(() => {
 
-        menu.style.display = "none";
-        info.style.display = "none";
+        /*
+          Only hide the menu.
+          The information itself is NOT erased.
+        */
 
-      }, 1200);
+        menu.style.display = "none";
+
+      }, 3000);
 
     });
 
