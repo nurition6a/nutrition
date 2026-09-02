@@ -10,25 +10,10 @@
   <title>Living Things - Nutrition</title>
 
   <style>
-
-    html,
     body {
       margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
       overflow: hidden;
       font-family: Arial, sans-serif;
-      background: black;
-    }
-
-    .ar-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
     }
 
     #menu {
@@ -36,8 +21,7 @@
       top: 3%;
       left: 50%;
       transform: translateX(-50%);
-
-      z-index: 20;
+      z-index: 10;
 
       width: 92%;
       max-width: 650px;
@@ -45,7 +29,6 @@
       overflow-y: auto;
 
       background: rgba(255, 250, 235, 0.97);
-
       border: 5px solid #6b8e23;
       border-radius: 30px;
 
@@ -53,7 +36,6 @@
       box-sizing: border-box;
 
       text-align: center;
-
       display: none;
 
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
@@ -81,16 +63,11 @@
     button {
       border: 3px solid #555;
       border-radius: 18px;
-
       padding: 16px 8px;
-
       margin: 0;
-
       font-size: 21px;
       font-weight: bold;
-
       cursor: pointer;
-
       background: white;
     }
 
@@ -103,12 +80,10 @@
       padding: 22px;
 
       background: white;
-
       border: 4px solid #6b8e23;
       border-radius: 25px;
 
       display: none;
-
       text-align: left;
 
       box-shadow: 0 5px 20px rgba(0, 0, 0, 0.18);
@@ -117,9 +92,7 @@
     #info h2 {
       font-size: 30px;
       margin-top: 0;
-
       text-align: center;
-
       color: #285943;
     }
 
@@ -142,34 +115,22 @@
 
     .formula {
       text-align: center;
-
       font-size: 22px;
       font-weight: bold;
-
       background: #edf5e6;
-
       padding: 12px;
-
       border-radius: 15px;
-
       margin: 15px 0;
     }
 
     .back {
       display: block;
-
       margin: 20px auto 0;
-
       background: #dcecc9;
-
       border: 3px solid #477a3c;
-
       color: #285943;
-
       padding: 13px 20px;
-
       border-radius: 15px;
-
       font-size: 18px;
       font-weight: bold;
     }
@@ -210,80 +171,69 @@
         font-size: 18px;
       }
     }
-
   </style>
 </head>
 
-
 <body>
 
-  <div class="ar-container">
+  <div id="menu">
 
-    <div id="menu">
+    <h1>🌿 YOU FOUND IT! 🌿</h1>
 
-      <h1>🌿 YOU FOUND IT! 🌿</h1>
+    <p class="intro">
+      Discover how different living things obtain the nutrients
+      and energy they need to live.
+    </p>
 
-      <p class="intro">
-        Discover how different living things obtain the nutrients
-        and energy they need to live.
-      </p>
+    <div class="buttons">
 
-      <div class="buttons">
+      <button onclick="showInfo('photosynthesis')">
+        🌱 Photosynthesis
+      </button>
 
-        <button onclick="showInfo('photosynthesis')">
-          🌱 Photosynthesis
-        </button>
+      <button onclick="showInfo('chemosynthesis')">
+        🦠 Chemosynthesis
+      </button>
 
-        <button onclick="showInfo('chemosynthesis')">
-          🦠 Chemosynthesis
-        </button>
+      <button onclick="showInfo('fungi')">
+        🍄 Fungi
+      </button>
 
-        <button onclick="showInfo('fungi')">
-          🍄 Fungi
-        </button>
-
-        <button onclick="showInfo('animals')">
-          🐾 Heterotrophic Animals
-        </button>
-
-      </div>
-
-      <div id="info"></div>
+      <button onclick="showInfo('animals')">
+        🐾 Heterotrophic Animals
+      </button>
 
     </div>
 
-
-    <a-scene
-      mindar-image="
-        imageTargetSrc: ./targets.mind;
-        autoStart: true;
-        uiLoading: no;
-        uiScanning: no;
-        uiError: no;
-        filterMinCF: 0.0001;
-        filterBeta: 0.001;
-        warmupTolerance: 3;
-        missTolerance: 2;
-      "
-      embedded
-      color-space="sRGB"
-      renderer="colorManagement: true"
-      vr-mode-ui="enabled: false"
-      device-orientation-permission-ui="enabled: false">
-
-      <a-camera
-        position="0 0 0"
-        look-controls="enabled: false">
-      </a-camera>
-
-      <a-entity
-        id="target"
-        mindar-image-target="targetIndex: 0">
-      </a-entity>
-
-    </a-scene>
+    <div id="info"></div>
 
   </div>
+
+
+  <!-- AR CAMERA -->
+
+  <a-scene
+    mindar-image="
+      imageTargetSrc: ./targets.mind;
+      filterMinCF: 0.0001;
+      filterBeta: 0.001;
+    "
+    color-space="sRGB"
+    renderer="colorManagement: true"
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false">
+
+    <a-camera
+      position="0 0 0"
+      look-controls="enabled: false">
+    </a-camera>
+
+    <a-entity
+      id="target"
+      mindar-image-target="targetIndex: 0">
+    </a-entity>
+
+  </a-scene>
 
 
   <script>
@@ -293,10 +243,7 @@
     const info = document.querySelector("#info");
 
 
-    /*
-      When the card is detected,
-      show the menu.
-    */
+    /* IMAGE FOUND */
 
     target.addEventListener("targetFound", () => {
 
@@ -305,14 +252,14 @@
     });
 
 
-    /*
-      IMPORTANT:
-      We DO NOT use targetLost.
+    /* IMAGE LOST */
 
-      This means that if the camera temporarily
-      loses the card because of movement,
-      the menu and information stay on screen.
-    */
+    target.addEventListener("targetLost", () => {
+
+      menu.style.display = "none";
+      info.style.display = "none";
+
+    });
 
 
     function showInfo(type) {
