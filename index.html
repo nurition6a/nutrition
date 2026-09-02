@@ -1,13 +1,16 @@
 <!DOCTYPE html>
-<html lang="es">
-
+<html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+  <title>MindAR Test</title>
 
-  <title>Camera Test</title>
+  <!-- A-Frame -->
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+
+  <!-- MindAR -->
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
 
   <style>
     html,
@@ -17,36 +20,26 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: black;
     }
 
-    #camera {
-      position: fixed;
-      top: 0;
-      left: 0;
-
+    .ar-container {
+      position: absolute;
       width: 100%;
       height: 100%;
-
-      object-fit: cover;
-      background: black;
+      overflow: hidden;
     }
 
     #message {
       position: fixed;
-
       top: 20px;
       left: 50%;
-
       transform: translateX(-50%);
-
-      z-index: 10;
+      z-index: 9999;
 
       background: white;
       color: black;
 
       padding: 15px 20px;
-
       border-radius: 20px;
 
       font-family: Arial, sans-serif;
@@ -56,68 +49,68 @@
       text-align: center;
     }
   </style>
-
 </head>
 
 <body>
 
-  <video
-    id="camera"
-    autoplay
-    playsinline>
-  </video>
+  <div class="ar-container">
 
-  <div id="message">
-    📷 Starting camera...
+    <div id="message">
+      📷 Point the camera at your nutrition card
+    </div>
+
+    <a-scene
+      mindar-image="
+        imageTargetSrc: ./targets.mind;
+        autoStart: true;
+        uiLoading: no;
+        uiScanning: no;
+        uiError: no;
+      "
+      embedded
+      color-space="sRGB"
+      renderer="colorManagement: true, physicallyCorrectLights"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
+    >
+
+      <a-camera
+        position="0 0 0"
+        look-controls="enabled: false">
+      </a-camera>
+
+      <!-- TARGET 0 -->
+      <a-entity
+        id="target"
+        mindar-image-target="targetIndex: 0">
+
+        <!-- Cubo de prueba -->
+        <a-box
+          position="0 0 0.2"
+          color="red"
+          depth="0.3"
+          height="0.3"
+          width="0.3">
+        </a-box>
+
+      </a-entity>
+
+    </a-scene>
+
   </div>
 
-
   <script>
+    const target = document.querySelector("#target");
+    const message = document.querySelector("#message");
 
-    const video = document.getElementById("camera");
-    const message = document.getElementById("message");
+    target.addEventListener("targetFound", () => {
+      message.innerHTML = "✅ TARGET FOUND!";
+    });
 
-
-    async function startCamera() {
-
-      try {
-
-        const stream = await navigator.mediaDevices.getUserMedia({
-
-          video: {
-            facingMode: {
-              ideal: "environment"
-            }
-          },
-
-          audio: false
-
-        });
-
-
-        video.srcObject = stream;
-
-        message.innerHTML = "✅ CAMERA WORKING";
-
-
-        console.log("Camera started successfully");
-
-      } catch (error) {
-
-        console.error("Camera error:", error);
-
-        message.innerHTML =
-          "❌ Camera error: " + error.name;
-
-      }
-
-    }
-
-
-    startCamera();
-
+    target.addEventListener("targetLost", () => {
+      message.innerHTML = "📷 Point the camera at your nutrition card";
+    });
   </script>
 
 </body>
-
 </html>
