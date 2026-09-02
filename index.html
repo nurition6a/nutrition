@@ -8,10 +8,10 @@
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-  <title>Nutrition AR</title>
+  <title>Nutrition Augmented Reality</title>
 
   <!-- A-Frame -->
-  <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 
   <!-- MindAR -->
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
@@ -45,7 +45,7 @@
       background: white;
       color: black;
 
-      padding: 14px 20px;
+      padding: 14px 22px;
 
       border-radius: 20px;
 
@@ -54,6 +54,8 @@
       font-weight: bold;
 
       text-align: center;
+
+      box-shadow: 0 3px 10px rgba(0,0,0,0.3);
     }
 
   </style>
@@ -75,9 +77,9 @@
       mindar-image="
         imageTargetSrc: ./targets.mind;
         autoStart: true;
-        uiLoading: no;
-        uiError: no;
-        uiScanning: no;
+        uiLoading: yes;
+        uiError: yes;
+        uiScanning: yes;
       "
 
       embedded
@@ -92,8 +94,11 @@
       vr-mode-ui="enabled: false"
 
       device-orientation-permission-ui="enabled: false"
+
     >
 
+
+      <!-- CAMERA -->
 
       <a-camera
         position="0 0 0"
@@ -101,21 +106,66 @@
       </a-camera>
 
 
-      <!-- TARGET -->
+      <!-- IMAGE TARGET -->
 
       <a-entity
-        id="target"
+        id="nutritionTarget"
         mindar-image-target="targetIndex: 0">
 
 
-        <!-- Simple test object -->
+        <!-- WHITE INFORMATION PANEL -->
 
-        <a-box
-          position="0 0 0.1"
-          rotation="0 45 0"
-          color="#4CAF50"
-          scale="0.3 0.3 0.3">
-        </a-box>
+        <a-plane
+          position="0 0 0.05"
+          width="1.2"
+          height="0.8"
+          color="#FFFFFF">
+        </a-plane>
+
+
+        <!-- TITLE -->
+
+        <a-text
+          value="NUTRITION"
+          position="0 0.28 0.1"
+          align="center"
+          color="#1B5E20"
+          width="1.6">
+        </a-text>
+
+
+        <!-- INFORMATION -->
+
+        <a-text
+          value="Living things obtain nutrients in different ways.
+
+Autotrophs make their own food.
+
+Plants use photosynthesis.
+
+Some bacteria use chemosynthesis.
+
+Animals and fungi are heterotrophs."
+          position="0 0.02 0.1"
+          align="center"
+          color="#222222"
+          width="1.15"
+          wrap-count="35"
+          line-height="55">
+        </a-text>
+
+
+        <!-- FINAL MESSAGE -->
+
+        <a-text
+          value="Good nutrition provides energy and nutrients needed to grow, develop and survive."
+          position="0 -0.29 0.1"
+          align="center"
+          color="#2E7D32"
+          width="1.05"
+          wrap-count="38"
+          line-height="55">
+        </a-text>
 
 
       </a-entity>
@@ -129,36 +179,44 @@
   <script>
 
     const target =
-      document.querySelector("#target");
+      document.querySelector("#nutritionTarget");
 
     const message =
       document.querySelector("#message");
 
 
-    target.addEventListener(
-      "targetFound",
-      function () {
+    /*
+     * When the card is detected
+     */
 
-        console.log("TARGET FOUND");
+    target.addEventListener("targetFound", function () {
 
-        message.innerHTML =
-          "✅ CARD DETECTED!";
+      console.log("CARD DETECTED");
 
-      }
-    );
+      message.innerHTML = "✅ Card detected!";
+
+      setTimeout(function () {
+        message.style.display = "none";
+      }, 1000);
+
+    });
 
 
-    target.addEventListener(
-      "targetLost",
-      function () {
+    /*
+     * When the card is no longer detected
+     */
 
-        console.log("TARGET LOST");
+    target.addEventListener("targetLost", function () {
 
-        message.innerHTML =
-          "📷 Point the camera at the nutrition card";
+      console.log("CARD LOST");
 
-      }
-    );
+      message.style.display = "block";
+
+      message.innerHTML =
+        "📷 Point the camera at the nutrition card";
+
+    });
+
 
   </script>
 
